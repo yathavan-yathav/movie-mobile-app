@@ -5,16 +5,35 @@ import MovieCard from "../components/MovieCard";
 
 export default function HomeScreen({ navigation }) {
 
+  const appStart = Date.now();   // Start when component initializes
+
   const [movies, setMovies] = useState([]);
 
+  // 1️⃣ Measure First Screen Render (FCP equivalent)
   useEffect(() => {
-    loadMovies();
+    requestAnimationFrame(() => {
+      const renderTime = Date.now() - appStart;
+      console.log("First Screen Render Time:", renderTime, "ms");
+    });
   }, []);
 
-  const loadMovies = async () => {
+
+useEffect(() => {
+  const load = async () => {
+    const start = performance.now();
+
     const data = await getPopularMovies();
+
+    const end = performance.now();
+
+    console.log("API Fetch Time:", end - start, "ms");
+
     setMovies(data);
   };
+
+  load();
+}, []);
+
 
   return (
     <FlatList
